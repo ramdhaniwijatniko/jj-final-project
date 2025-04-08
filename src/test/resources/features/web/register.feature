@@ -1,4 +1,4 @@
-@web
+@register
 Feature: Registrasi Akun di Demoblaze
   Sebagai user baru
   Saya ingin mendaftar akun di Demoblaze
@@ -13,6 +13,6 @@ Feature: Registrasi Akun di Demoblaze
     Then sistem menampilkan pesan "<expectedMessage>"
 
     Examples:
-      | username       | password      | expectedMessage              |
-      | normannew      | brigade234    | Sign up successful.          |
-      | user123        | password123   | This user already exist.     |
+      | username | password    | expectedMessage              |
+      | random   | amir123     | Sign up successful.          |
+      | user123  | password123 | This user already exist.     |

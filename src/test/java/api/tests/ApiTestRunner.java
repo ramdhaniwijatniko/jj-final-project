@@ -9,7 +9,9 @@ import io.cucumber.junit.platform.engine.Constants;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/api")  // Sesuaikan dengan lokasi file .feature
+@ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "@api")
 @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "api.stepdefinitions")
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-reports/api/cucumber-reports-api-test.html")
+
 public class ApiTestRunner {
 }

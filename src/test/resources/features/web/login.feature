@@ -1,4 +1,4 @@
-@web
+@login
 Feature: Login ke Demoblaze
 
 Scenario: User berhasil login ke aplikasi
