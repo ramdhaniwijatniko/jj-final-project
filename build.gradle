@@ -23,7 +23,7 @@ dependencies {
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0'
-
+    //testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
     // Selenium untuk Web UI Testing
      //testImplementation 'org.seleniumhq.selenium:selenium-java:4.8.0'
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.11.0'
