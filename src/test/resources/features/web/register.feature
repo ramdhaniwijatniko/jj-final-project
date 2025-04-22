@@ -1,4 +1,4 @@
-@register
+@web @priority2
 Feature: Registrasi Akun di Demoblaze
   Sebagai user baru
   Saya ingin mendaftar akun di Demoblaze

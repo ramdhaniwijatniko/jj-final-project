@@ -25,7 +25,7 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 // Urutan eksekusi berdasarkan tag (Register → Login → Checkout)
 @ConfigurationParameter(
     key = FILTER_TAGS_PROPERTY_NAME,
-    value = "@checkout"
+    value = "@web"
 )
 // or @register or @login or @checkout
 public class WebTestRunner {
