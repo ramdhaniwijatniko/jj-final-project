@@ -25,14 +25,16 @@ jobs:
         run: |
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
-
-      - name: Install ChromeDriver
-        uses: actions/setup-chromedriver@v3 # Menambahkan ChromeDriver installation
-        with:
-          chrome-version: stable # Memastikan versi ChromeDriver sesuai dengan Chrome
+          CHROME_VERSION=$(google-chrome --version | sed -E 's/Google Chrome ([0-9.]+)/\1/')
+          echo "Chrome Version: $CHROME_VERSION"
+          DRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          echo "ChromeDriver Version: $DRIVER_VERSION"
+          wget "https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip"
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
 
       - name: Grant permission to execute gradlew
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test -Dchromeoptions.args="--headless --no-sandbox" # Menambahkan opsi headless dan no-sandbox
+        run: ./gradlew test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -Dchromeoptions.args="--headless --no-sandbox"
