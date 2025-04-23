@@ -21,18 +21,22 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Chrome dan Chromedriver versi kompatibel
+      - name: Install Google Chrome dan ChromeDriver versi stabil
         run: |
-            # Install Chrome versi 114 (stabil & tersedia ChromeDriver-nya)
+            # Update dan install Google Chrome versi stabil terbaru
             sudo apt-get update
-            wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.133-1_amd64.deb
-            sudo apt install -y ./google-chrome-stable_114.0.5735.133-1_amd64.deb
+            sudo apt-get install -y google-chrome-stable
         
-            # Download ChromeDriver versi yang cocok
-            wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+            # Cek versi Chrome yang diinstal
+            google-chrome --version
+        
+            # Install versi Chromedriver yang sesuai dengan Chrome versi 114
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+            wget https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
             sudo chmod +x /usr/local/bin/chromedriver
+        
         
 
       - name: Grant permission to execute gradlew
