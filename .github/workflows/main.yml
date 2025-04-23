@@ -21,20 +21,19 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Google Chrome
+      - name: Install Chrome dan Chromedriver versi kompatibel
         run: |
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
-
-      - name: Install chromedriver (compatible with installed Chrome)
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Installed Chrome version: $CHROME_VERSION"
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          wget https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
+            # Install Chrome versi 114 (stabil & tersedia ChromeDriver-nya)
+            sudo apt-get update
+            wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.133-1_amd64.deb
+            sudo apt install -y ./google-chrome-stable_114.0.5735.133-1_amd64.deb
+        
+            # Download ChromeDriver versi yang cocok
+            wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/chromedriver
+        
 
       - name: Grant permission to execute gradlew
         run: chmod +x ./gradlew
