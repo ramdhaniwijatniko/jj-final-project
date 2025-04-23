@@ -23,28 +23,31 @@ jobs:
 
       - name: Install Dependencies (jq, Chrome, ChromeDriver)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq google-chrome-stable unzip
+            sudo apt-get update
+            sudo apt-get install -y jq google-chrome-stable unzip
+        
+            # Ambil versi Chrome terinstal
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
+            echo "Detected Chrome version: $CHROME_VERSION"
+        
+            # Ambil URL ChromeDriver yang cocok
+            API_URL="https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+            CHROMEDRIVER_URL=$(curl -sS $API_URL | jq -r --arg ver "$CHROME_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform=="linux64") | .url' | head -1)
+        
+            if [ -z "$CHROMEDRIVER_URL" ]; then
+              echo "Error: Tidak ditemukan ChromeDriver yang cocok!"
+              exit 1
+            fi
+        
+            echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
+            curl -Lo chromedriver.zip "$CHROMEDRIVER_URL"
+            unzip chromedriver.zip
+            sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/chromedriver
+            rm -rf chromedriver.zip chromedriver-linux64
+        
 
-          # Ambil versi Chrome terinstal
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
-          echo "Detected Chrome version: $CHROME_VERSION"
-
-          # Ambil URL ChromeDriver yang cocok
-          API_URL="https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
-          CHROMEDRIVER_URL=$(curl -sS $API_URL | jq -r --arg ver "$CHROME_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform=="linux64") | .url' | head -1)
-
-          if [ -z "$CHROMEDRIVER_URL" ]; then
-            echo "Error: Tidak ditemukan ChromeDriver yang cocok!"
-            exit 1
-          fi
-
-          echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
-          curl -Lo chromedriver.zip "$CHROMEDRIVER_URL"
-          unzip chromedriver.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
-          rm -rf chromedriver.zip chromedriver-linux64
+        
 
       - name: Check Chrome & ChromeDriver version
         run: |
