@@ -16,12 +16,25 @@ public class Hooks {
     @Before
     public void setUp() {
         if (driver == null) {
-            WebDriverManager.chromedriver().setup();
+            /*WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage");
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
-        }
+            */
+            WebDriverManager.chromedriver().setup();
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless=new");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--window-size=1920,1080");
+
+            System.out.println("Initializing WebDriver...");
+            driver = new ChromeDriver(options);
+            driver.manage().window().maximize();
+            System.out.println("WebDriver initialized successfully.");
+
+            }
     }
 
     @After
