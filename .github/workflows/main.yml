@@ -21,33 +21,40 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Chrome & ChromeDriver (matching version)
+      - name: Install Dependencies (jq, Chrome, ChromeDriver)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip jq
+          sudo apt-get install -y jq google-chrome-stable unzip
 
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          # Ambil versi Chrome terinstal
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
+          echo "Detected Chrome version: $CHROME_VERSION"
 
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Installed Chrome version: $CHROME_VERSION"
+          # Ambil URL ChromeDriver yang cocok
+          API_URL="https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+          CHROMEDRIVER_URL=$(curl -sS $API_URL | jq -r --arg ver "$CHROME_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform=="linux64") | .url' | head -1)
 
-          DRIVER_URL=$(curl -sS https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json \
-            | jq -r '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url')
+          if [ -z "$CHROMEDRIVER_URL" ]; then
+            echo "Error: Tidak ditemukan ChromeDriver yang cocok!"
+            exit 1
+          fi
 
-          echo "Downloading ChromeDriver from: $DRIVER_URL"
-          curl -Lo chromedriver.zip "$DRIVER_URL"
+          echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
+          curl -Lo chromedriver.zip "$CHROMEDRIVER_URL"
           unzip chromedriver.zip
           sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+          rm -rf chromedriver.zip chromedriver-linux64
 
-      - name: Debug Chrome & ChromeDriver Version
+      - name: Check Chrome & ChromeDriver version
         run: |
+          which google-chrome
           google-chrome --version
+          which chromedriver
           chromedriver --version
 
       - name: Grant permission to execute gradlew
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
