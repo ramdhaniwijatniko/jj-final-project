@@ -20,7 +20,7 @@ public class Hooks {
             ChromeOptions options = new ChromeOptions();
 
             // Opsi penting buat CI
-            options.addArguments("--headless=new");
+            options.addArguments("--headless"); // Mengganti "--headless=new" menjadi "--headless"
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--disable-gpu");
