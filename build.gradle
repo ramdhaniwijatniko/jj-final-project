@@ -17,17 +17,16 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
     testImplementation 'org.junit.platform:junit-platform-suite-engine:1.10.0' // Tambahkan ini
 
-    
-
     // Cucumber
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0'
     //testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
     // Selenium untuk Web UI Testing
-     //testImplementation 'org.seleniumhq.selenium:selenium-java:4.8.0'
+    //testImplementation 'org.seleniumhq.selenium:selenium-java:4.8.0'
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.11.0'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.6.3'
+    testImplementation "org.seleniumhq.selenium:selenium-devtools-v135:4.11.0" // Tambahkan baris ini
 
     // RestAssured untuk API Testing
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
@@ -47,8 +46,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
     testImplementation 'io.rest-assured:json-path:5.3.0'
     testImplementation 'io.rest-assured:xml-path:5.3.0'
-
-    
 }
 
 
