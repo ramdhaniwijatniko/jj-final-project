@@ -27,7 +27,7 @@ jobs:
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
       - name: Install ChromeDriver
-        uses: actions/setup-chromedriver@v2 # Menambahkan ChromeDriver installation
+        uses: actions/setup-chromedriver@v3 # Menambahkan ChromeDriver installation
         with:
           chrome-version: stable # Memastikan versi ChromeDriver sesuai dengan Chrome
 
