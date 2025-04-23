@@ -23,12 +23,16 @@ jobs:
 
       - name: Install Google Chrome
         run: |
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo apt install -y ./google-chrome-stable_current_amd64.deb
-        
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
+      - name: Install ChromeDriver
+        uses: actions/setup-chromedriver@v2 # Menambahkan ChromeDriver installation
+        with:
+          chrome-version: stable # Memastikan versi ChromeDriver sesuai dengan Chrome
 
       - name: Grant permission to execute gradlew
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test -Dchromeoptions.args="--headless --no-sandbox" # Menambahkan opsi headless dan no-sandbox
