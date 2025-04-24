@@ -17,13 +17,21 @@ public class Hooks {
     public void setUp() {
         if (driver == null) {
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless=new"); // gunakan headless new untuk lebih stabil
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--window-size=1920,1080");
-            options.addArguments("--remote-allow-origins=*");
-
+    
+            // Ambil argumen dari sistem properti jika tersedia
+            String chromeOptionsArgs = System.getProperty("chromeoptions.args");
+            if (chromeOptionsArgs != null && !chromeOptionsArgs.isEmpty()) {
+                options.addArguments(chromeOptionsArgs.split(" "));
+            } else {
+                // Default arguments jika tidak ada properti
+                options.addArguments("--headless");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--window-size=1920,1080");
+                options.addArguments("--remote-allow-origins=*");
+            }
+    
             // Cek apakah sedang di CI environment
             String ci = System.getenv("CI");
             if (ci != null && ci.equalsIgnoreCase("true")) {
@@ -31,13 +39,14 @@ public class Hooks {
             } else {
                 WebDriverManager.chromedriver().setup(); // untuk local
             }
-
+    
             System.out.println("Initializing WebDriver...");
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
             System.out.println("WebDriver initialized successfully.");
         }
     }
+    
 
     @After
     public void tearDown(Scenario scenario) {

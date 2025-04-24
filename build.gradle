@@ -46,7 +46,12 @@ tasks.withType(Test).configureEach {
     testLogging {
         events "passed", "skipped", "failed"
     }
+
+    // Mengambil argumen dari properti sistem dan menambahkannya ke dalam properti sistem untuk Selenium
+    def chromeArgs = project.hasProperty('chromeoptions.args') ? project.chromeoptions.args : ''
+    systemProperty 'chromeoptions.args', chromeArgs
 }
+
 
 // ✅ Hanya gunakan satu task untuk API Test (Tag: @api)
 tasks.register('apiTest', Test) {
@@ -66,3 +71,14 @@ tasks.register('webTest', Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
 }
+
+
+test {
+    useJUnitPlatform()
+
+    def chromeArgs = project.findProperty("chromeoptions.args")
+    if (chromeArgs != null) {
+        systemProperty "chromeoptions.args", chromeArgs
+    }
+}
+
