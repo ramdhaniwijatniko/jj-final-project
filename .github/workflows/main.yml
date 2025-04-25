@@ -24,7 +24,7 @@ jobs:
       - name: Set up Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: stable  # Atau versi spesifik jika dibutuhkan
+          chrome-version: stable
 
       - name: Check Chrome & ChromeDriver version
         run: |
@@ -33,8 +33,11 @@ jobs:
           which chromedriver
           chromedriver --version
 
+      - name: Check PATH
+        run: echo $PATH
+
       - name: Grant permission to execute gradlew
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
+        run: ./gradlew test -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
