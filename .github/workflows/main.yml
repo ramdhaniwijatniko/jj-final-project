@@ -30,6 +30,6 @@ jobs:
 
       - name: Grant execute permission to ChromeDriver
         run: chmod +x $GITHUB_WORKSPACE/src/test/resources/driver/chromedriver
-
+      
       - name: Run Tests
         run: ./gradlew test -Dwebdriver.chrome.driver=$GITHUB_WORKSPACE/src/test/resources/driver/chromedriver -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
