@@ -3,7 +3,7 @@ package web.stepdefinitions;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-//import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -14,39 +14,38 @@ public class Hooks {
     private static WebDriver driver;
 
     @Before
-public void setUp() {
-    if (driver == null) {
-        ChromeOptions options = new ChromeOptions();
-
-        // Ambil argumen dari sistem properti jika tersedia
-        String chromeOptionsArgs = System.getProperty("chromeoptions.args");
-        if (chromeOptionsArgs != null && !chromeOptionsArgs.isEmpty()) {
-            options.addArguments(chromeOptionsArgs.split(" "));
-        } else {
-            // Default args
-            options.addArguments("--headless=new");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--window-size=1920,1080");
-            options.addArguments("--remote-allow-origins=*");
+    public void setUp() {
+        if (driver == null) {
+            ChromeOptions options = new ChromeOptions();
+    
+            // Ambil argumen dari sistem properti jika tersedia
+            String chromeOptionsArgs = System.getProperty("chromeoptions.args");
+            if (chromeOptionsArgs != null && !chromeOptionsArgs.isEmpty()) {
+                options.addArguments(chromeOptionsArgs.split(" "));
+            } else {
+                // Default arguments jika tidak ada properti
+                options.addArguments("--headless");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--window-size=1920,1080");
+                options.addArguments("--remote-allow-origins=*");
+            }
+    
+            // Cek apakah sedang di CI environment
+            String ci = System.getenv("CI");
+            if (ci != null && ci.equalsIgnoreCase("true")) {
+                System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+            } else {
+                WebDriverManager.chromedriver().setup(); // untuk local
+            }
+    
+            System.out.println("Initializing WebDriver...");
+            driver = new ChromeDriver(options);
+            driver.manage().window().maximize();
+            System.out.println("WebDriver initialized successfully.");
         }
-
-        // Tentukan path chromedriver secara eksplisit
-        String ci = System.getenv("CI");
-        if (ci != null && ci.equalsIgnoreCase("true")) {
-            System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-        } else {
-            System.setProperty("webdriver.chrome.driver", "driver/chromedriver");
-        }
-
-        System.out.println("Initializing WebDriver...");
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        System.out.println("WebDriver initialized successfully.");
     }
-}
-
     
 
     @After
