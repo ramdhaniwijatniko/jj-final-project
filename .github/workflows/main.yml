@@ -21,15 +21,10 @@ jobs:
           distribution: temurin
           java-version: 11 # Sesuaikan dengan sourceCompatibility di build.gradle
 
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          echo "Chrome installed."
-          google-chrome --version
-
-      - name: Grant permission to execute gradlew
-        run: chmod +x ./gradlew
+      - name: Set up Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
 
       - name: Run Tests
         run: ./gradlew test -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
