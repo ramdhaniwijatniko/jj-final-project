@@ -21,15 +21,15 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Chrome (tanpa ChromeDriver manual)
+      - name: Install Chrome
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
           echo "Chrome installed."
           google-chrome --version
 
-      - name: Grant permission to execute gradlew
-        run: chmod +x ./gradlew
+      - name: Grant execute permission to ChromeDriver
+        run: chmod +x $GITHUB_WORKSPACE/src/test/resources/driver/chromedriver
 
       - name: Run Tests
         run: ./gradlew test -Dwebdriver.chrome.driver=$GITHUB_WORKSPACE/src/test/resources/driver/chromedriver -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
