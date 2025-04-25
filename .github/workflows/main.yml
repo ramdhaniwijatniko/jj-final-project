@@ -36,4 +36,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
+        run: ./gradlew test -Dchromeoptions.args="--no-sandbox --disable-dev-shm-usage"
