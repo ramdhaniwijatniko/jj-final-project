@@ -21,17 +21,16 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Setup ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
+      - name: Install Chrome
+        run: |
+          sudo apt update
+          sudo apt install -y google-chrome-stable
 
-      - name: Update PATH (Try 1)
-        run: echo "/usr/local/bin" >> $GITHUB_PATH
+      - name: Setup ChromeDriver via WebDriverManager (in code)
+        run: echo "Use WebDriverManager in your Java code"
 
-      - name: Find ChromeDriver
-        run: find $GITHUB_WORKSPACE -name "chromedriver" -print
+      - name: Grant permission to Gradle
+        run: chmod +x ./gradlew
 
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew     
-        
       - name: Run Tests
-        run: ./gradlew test -Dchromeoptions.args="--no-sandbox --disable-dev-shm-usage"
+        run: ./gradlew test
