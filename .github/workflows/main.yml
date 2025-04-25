@@ -26,21 +26,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget jq unzip
 
-          # Get latest stable Chrome version for Linux
-          CHROME_VERSION=$(curl -s https://omahaproxy.appspot.com/all.json | jq -r '.[] | select(.os=="linux") | .versions[] | select(.channel=="stable") | .version')
+          # Get latest stable Chrome version for Linux from chromiumdash
+          DRIVER_JSON=$(curl -s "https://chromiumdash.appspot.com/fetch_stable?os=Linux")
+          CHROME_VERSION=$(echo "$DRIVER_JSON" | jq -r '.version')
           echo "Using Chrome version: $CHROME_VERSION"
-
-          # Install Chrome
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
           # Extract 3-part version for ChromeDriver lookup
           CHROMEDRIVER_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1-3)
           echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
 
-          # Get ChromeDriver download URL
-          DRIVER_JSON=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json")
-          CHROMEDRIVER_URL=$(echo "$DRIVER_JSON" | jq -r --arg ver "$CHROMEDRIVER_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform == "linux64") | .url' | head -n 1)
+          # Get ChromeDriver download URL from chrome-for-testing API
+          DRIVER_JSON_CFT=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json")
+          CHROMEDRIVER_URL=$(echo "$DRIVER_JSON_CFT" | jq -r --arg ver "$CHROMEDRIVER_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform == "linux64") | .url' | head -n 1)
 
           echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
           curl -Lo chromedriver.zip "$CHROMEDRIVER_URL"
