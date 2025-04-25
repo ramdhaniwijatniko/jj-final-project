@@ -19,22 +19,21 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11 # Sesuaikan dengan sourceCompatibility di build.gradle
+          java-version: 11
 
       - name: Set up Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: stable
 
+      - name: Update PATH (Try 1)
+        run: echo "/usr/local/bin" >> $GITHUB_PATH
+
+      - name: Find ChromeDriver
+        run: find $GITHUB_WORKSPACE -name "chromedriver" -print
+
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
-
-      - name: Verify ChromeDriver
-        run: |
-          echo "Checking for ChromeDriver at /usr/local/bin:"
-          ls -l /usr/local/bin/chromedriver
-          echo "Checking permissions:"
-          file /usr/local/bin/chromedriver
 
       - name: Run Tests
         run: ./gradlew test -Dchromeoptions.args="--headless=new --no-sandbox --disable-dev-shm-usage"
