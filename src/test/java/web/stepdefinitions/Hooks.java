@@ -32,7 +32,6 @@ public class Hooks {
                 options.addArguments("--remote-allow-origins=*");
             }
     
-            // Cek apakah sedang di CI environment
             String ci = System.getenv("CI");
             if (ci != null && ci.equalsIgnoreCase("true")) {
                 System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");

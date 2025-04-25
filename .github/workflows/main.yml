@@ -26,11 +26,11 @@ jobs:
           sudo apt update
           sudo apt install -y google-chrome-stable
 
-      - name: Setup ChromeDriver via WebDriverManager (in code)
-        run: echo "Use WebDriverManager in your Java code"
+      - name: Verify Chrome installation
+        run: google-chrome --version
 
-      - name: Grant permission to Gradle
+      - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test -Dchromeoptions.args="--headless --no-sandbox --disable-dev-shm-usage"
