@@ -21,10 +21,8 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Set up Chrome and ChromeDriver
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
+      - name: Setup ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
 
       - name: Update PATH (Try 1)
         run: echo "/usr/local/bin" >> $GITHUB_PATH
@@ -33,7 +31,7 @@ jobs:
         run: find $GITHUB_WORKSPACE -name "chromedriver" -print
 
       - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew
-
+        run: chmod +x ./gradlew     
+        
       - name: Run Tests
         run: ./gradlew test -Dchromeoptions.args="--no-sandbox --disable-dev-shm-usage"
