@@ -1,44 +1,33 @@
-name: Run Web & API Tests
+name: Run Automation Tests
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: 11
+
+      - name: Set up Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
 
       - name: Grant execute permission to gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./gradlew
 
-      - name: Install Google Chrome & jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
-      - name: Install Chromedriver
-        run: |
-          CHROMEDRIVER_VERSION=$(curl -sS "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" \
-            | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform == \"linux64\") | .version")
-          wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip"
-          unzip chromedriver-linux64.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
-          sudo chmod +x /usr/local/bin/chromedriver
-          rm -rf chromedriver-linux64 chromedriver-linux64.zip
-
-      - name: Run Tests (Web & API)
-        run: ./gradlew test -Dchromeoptions.args="--headless --no-sandbox --disable-dev-shm-usage"
+      - name: Run Tests
+        run: ./gradlew test -Dchromeoptions.args="--no-sandbox --disable-dev-shm-usage"
