@@ -21,16 +21,22 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Dependencies (jq, Chrome, ChromeDriver)
+      - name: Install Chrome and matching ChromeDriver
         run: |
             sudo apt-get update
-            sudo apt-get install -y jq google-chrome-stable unzip
+            sudo apt-get install -y wget gnupg unzip jq
         
-            # Ambil versi Chrome terinstal
+            # Tambah repo resmi Google Chrome
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+            echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+        
+            # Ambil versi Chrome
             CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
             echo "Detected Chrome version: $CHROME_VERSION"
         
-            # Ambil URL ChromeDriver yang cocok
+            # Download ChromeDriver yang sesuai
             API_URL="https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
             CHROMEDRIVER_URL=$(curl -sS $API_URL | jq -r --arg ver "$CHROME_VERSION" '.versions[] | select(.version | startswith($ver)) | .downloads.chromedriver[] | select(.platform=="linux64") | .url' | head -1)
         
@@ -46,9 +52,6 @@ jobs:
             sudo chmod +x /usr/local/bin/chromedriver
             rm -rf chromedriver.zip chromedriver-linux64
         
-
-        
-
       - name: Check Chrome & ChromeDriver version
         run: |
           which google-chrome
