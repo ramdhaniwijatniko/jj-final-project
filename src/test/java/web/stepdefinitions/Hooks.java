@@ -18,16 +18,7 @@ public class Hooks {
     public static void setUp() {
             ChromeOptions options = new ChromeOptions();
 
-            // Ambil argumen dari sistem properti jika tersedia (untuk CI)
-            String chromeOptionsArgs = System.getProperty("chromeoptions.args");
-            if (chromeOptionsArgs != null && !chromeOptionsArgs.isEmpty()) {
-                options.addArguments(chromeOptionsArgs.split(" "));
-            } else {
-                // Default options untuk lokal development
-                options.addArguments("--start-maximized");
-                options.addArguments("--headless"); // For CI CD running
-                options.addArguments("--remote-allow-origins=*");
-            }
+            options.addArguments("--headless"); // For CI CD running
 
             // Setup chromedriver via WebDriverManager
             WebDriverManager.chromedriver().setup();
