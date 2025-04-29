@@ -13,7 +13,7 @@ public class LoginSteps {
     private LoginPage loginPage;
 
     public LoginSteps() {
-        this.driver = CommonSteps.getDriver();
+        this.driver = Hooks.getDriver();
         this.homePage = new HomePage(driver);
     }
 

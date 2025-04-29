@@ -16,7 +16,7 @@ public class RegisterSteps {
     }
 
     public RegisterSteps() {
-        this.driver = CommonSteps.getDriver();
+        this.driver = Hooks.getDriver();
         this.registerPage = new RegisterPage(driver);
     }
 

@@ -9,8 +9,8 @@ import java.util.List;
 
 public class HomePage {
 
-    private final WebDriver driver;
-    private final WebDriverWait wait;
+    private WebDriver driver;
+    private WebDriverWait wait;
 
     // Locators
     private final By cartButton = By.id("cartur");
