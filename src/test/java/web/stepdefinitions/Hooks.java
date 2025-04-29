@@ -4,6 +4,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -14,19 +15,10 @@ public class Hooks {
     private static WebDriver driver;
 
     @Before
-    public void setUp() {
-        if (driver == null) {
+    public static void setUp() {
             ChromeOptions options = new ChromeOptions();
 
-            // Ambil argumen dari sistem properti jika tersedia (untuk CI)
-            String chromeOptionsArgs = System.getProperty("chromeoptions.args");
-            if (chromeOptionsArgs != null && !chromeOptionsArgs.isEmpty()) {
-                options.addArguments(chromeOptionsArgs.split(" "));
-            } else {
-                // Default options untuk lokal development
-                options.addArguments("--start-maximized");
-                options.addArguments("--remote-allow-origins=*");
-            }
+            options.addArguments("--headless"); // For CI CD running
 
             // Setup chromedriver via WebDriverManager
             WebDriverManager.chromedriver().setup();
@@ -34,23 +26,51 @@ public class Hooks {
             System.out.println("Initializing WebDriver...");
             driver = new ChromeDriver(options);
             System.out.println("WebDriver initialized successfully.");
-        }
     }
 
     @After
-    public void tearDown(Scenario scenario) {
+    public static void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+        driver = null;
+    }
+
+    public static void attachment(Scenario scenario) {
         if (scenario.isFailed() && driver != null) {
             byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
             scenario.attach(screenshot, "image/png", "screenshot");
         }
-
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
     }
 
     public static WebDriver getDriver() {
+        try {
+            if (driver == null) {
+                setUp();
+            }
+            driver.getTitle(); // simple harmless call to check session
+        } catch (NoSuchSessionException e) {
+            setUp();
+        } catch (Exception e) {
+            // Other exceptions can also indicate driver issues
+            setUp();
+        }
+
         return driver;
+    }
+
+    public boolean isSessionActive(WebDriver driver) {
+        try {
+            if (driver == null) {
+                return false;
+            }
+            driver.getTitle(); // simple harmless call to check session
+            return true;
+        } catch (NoSuchSessionException e) {
+            return false;
+        } catch (Exception e) {
+            // Other exceptions can also indicate driver issues
+            return false;
+        }
     }
 }

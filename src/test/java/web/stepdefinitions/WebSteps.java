@@ -9,9 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class WebSteps {
     protected WebDriver driver;
 
-    @Before
-    public void setUp() {
-        driver = new ChromeDriver();
+    //@Before
+    public WebSteps() {
+        driver = Hooks.getDriver();
     }
 
     @Given("user membuka website Demoblaze")
@@ -19,7 +19,7 @@ public class WebSteps {
         driver.get("https://www.demoblaze.com/");
     }
 
-    @After
+    // @After
     public void tearDown() {
         if (driver != null) {
             driver.quit();

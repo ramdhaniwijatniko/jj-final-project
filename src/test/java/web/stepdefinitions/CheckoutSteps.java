@@ -120,8 +120,7 @@ public class CheckoutSteps {
 
     private void setupDriver() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        driver = Hooks.getDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(DEFAULT_TIMEOUT));
         homePage = new HomePage(driver);
         checkoutPage = new CheckoutPage(driver);

@@ -5,7 +5,6 @@ plugins {
 
 group = 'com.automation'
 version = '1.0'
-sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -42,44 +41,50 @@ dependencies {
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+test {
+    useJUnit()
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//    }
 
     // Mengambil argumen dari properti sistem dan menambahkannya ke dalam properti sistem untuk Selenium
-    def chromeArgs = project.hasProperty('chromeoptions.args') ? project.chromeoptions.args : ''
-    systemProperty 'chromeoptions.args', chromeArgs
+//    def chromeArgs = project.hasProperty('chromeoptions.args') ? project.chromeoptions.args : ''
+//    systemProperty 'chromeoptions.args', chromeArgs
 }
-
-
-// ✅ Hanya gunakan satu task untuk API Test (Tag: @api)
 tasks.register('apiTest', Test) {
     useJUnitPlatform()
-    systemProperty 'cucumber.filter.tags', '@api'
-    systemProperty 'cucumber.plugin', "json:target/cucumber-reports/cucumber-api.json, html:target/cucumber-reports/cucumber-api.html"
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
 }
+
+tasks.register('webTest', Test) {
+    useJUnit()
+}
+
+// ✅ Hanya gunakan satu task untuk API Test (Tag: @api)
+//tasks.register('apiTest', Test) {
+//    useJUnitPlatform()
+//    systemProperty 'cucumber.filter.tags', '@api'
+//    systemProperty 'cucumber.plugin', "json:target/cucumber-reports/cucumber-api.json, html:target/cucumber-reports/cucumber-api.html"
+//    testClassesDirs = sourceSets.test.output.classesDirs
+//    classpath = sourceSets.test.runtimeClasspath
+//}
 
 // Hanya gunakan satu task untuk Web UI Test (Tag: @web)
 // Menjalankan hanya test Web UI (Tag: @web)
-tasks.register('webTest', Test) {
-    useJUnitPlatform()
-    systemProperty 'cucumber.filter.tags', '@web'
-    systemProperty 'cucumber.plugin', "json:target/cucumber-reports/cucumber-web.json, html:target/cucumber-reports/cucumber-web.html"
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-}
+//tasks.register('webTest', Test) {
+//    useJUnitPlatform()
+//    systemProperty 'cucumber.filter.tags', '@web'
+//    systemProperty 'cucumber.plugin', "json:target/cucumber-reports/cucumber-web.json, html:target/cucumber-reports/cucumber-web.html"
+//    testClassesDirs = sourceSets.test.output.classesDirs
+//    classpath = sourceSets.test.runtimeClasspath
+//}
 
 
-test {
-    useJUnitPlatform()
-
-    def chromeArgs = project.findProperty("chromeoptions.args")
-    if (chromeArgs != null) {
-        systemProperty "chromeoptions.args", chromeArgs
-    }
-}
+//test {
+//    useJUnitPlatform()
+//
+//    def chromeArgs = project.findProperty("chromeoptions.args")
+//    if (chromeArgs != null) {
+//        systemProperty "chromeoptions.args", chromeArgs
+//    }
+//}
 

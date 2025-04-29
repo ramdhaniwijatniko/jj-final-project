@@ -29,5 +29,8 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      - name: Run Tests
-        run: ./gradlew test -Dchromeoptions.args="--no-sandbox --disable-dev-shm-usage"
+      - name: Run Tests API
+        run: ./gradlew apiTest
+
+      - name: Run Tests Web UI
+        run: ./gradlew webTest
