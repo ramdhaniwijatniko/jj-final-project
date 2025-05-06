@@ -40,11 +40,11 @@ jobs:
         if: always() #always() # success() , failure(), canceled()
         with:
           name: API Test reports
-          path: build/reports/apiTest  # Path to test reports
+          path: build/reports/tests/apiTest  # Path to test reports
 
       - name: Archive Web test results
         uses: actions/upload-artifact@v4.3.0
         if: always() #always() # success() , failure(), canceled()
         with:
-          name: API Test reports
+          name: Web Test reports
           path: target/cucumber-endtoend-reports.html  # Path to test reports
